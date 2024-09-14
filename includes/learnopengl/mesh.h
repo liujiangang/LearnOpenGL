@@ -25,10 +25,10 @@ struct Vertex {
     glm::vec3 Tangent;
     // bitangent
     glm::vec3 Bitangent;
-	//bone indexes which will influence this vertex
-	int m_BoneIDs[MAX_BONE_INFLUENCE];
-	//weights from each bone
-	float m_Weights[MAX_BONE_INFLUENCE];
+    //bone indexes which will influence this vertex
+    int m_BoneIDs[MAX_BONE_INFLUENCE];
+    //weights from each bone
+    float m_Weights[MAX_BONE_INFLUENCE];
 };
 
 struct Texture {
@@ -45,6 +45,12 @@ public:
     vector<Texture>      textures;
     unsigned int VAO;
 
+    #define MESH_TYPE_REAR_WHEEL 1
+    #define MESH_TYPE_FRONT_WHEEL 2
+    #define MESH_TYPE_CAR_BODY 0
+    #define MESH_NAME_MAX_LEN 50
+    char name[MESH_NAME_MAX_LEN];
+
     // constructor
     Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
     {
@@ -56,9 +62,37 @@ public:
         setupMesh();
     }
 
-    // render the mesh
-    void Draw(Shader &shader) 
+    // constructor
+    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, const char* n)
     {
+        this->vertices = vertices;
+        this->indices = indices;
+        this->textures = textures;
+
+        // now that we have all the required data, set the vertex buffers and its attribute pointers.
+        setupMesh();
+
+        if (strlen(n) < MESH_NAME_MAX_LEN) {
+            strcpy(name, n);
+        }
+        else {
+            strncpy(name, n, MESH_NAME_MAX_LEN-1);
+        }
+    }
+
+    // render the mesh
+    void Draw(Shader &shader)
+    {
+        //std::cout << "mesh["<<name<<"] start to draw..." << std::endl;
+        if (!strcmp(name, "TARMAC_TYRE_TREAD")
+            || !strcmp(name, "TARMAC_WHEEL")
+            || !strcmp(name, "TARMAC_TYRE_WALL")) {
+            shader.setInt("mesh_type", MESH_TYPE_FRONT_WHEEL);
+        }
+        else {
+            shader.setInt("mesh_type", MESH_TYPE_CAR_BODY);
+        }
+
         // bind appropriate textures
         unsigned int diffuseNr  = 1;
         unsigned int specularNr = 1;
@@ -95,7 +129,7 @@ public:
     }
 
 private:
-    // render data 
+    // render data
     unsigned int VBO, EBO;
 
     // initializes all the buffer objects/arrays
@@ -112,20 +146,20 @@ private:
         // A great thing about structs is that their memory layout is sequential for all its items.
         // The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
         // again translates to 3/2 floats which translates to a byte array.
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);  
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
         // set the vertex attribute pointers
         // vertex Positions
-        glEnableVertexAttribArray(0);	
+        glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
         // vertex normals
-        glEnableVertexAttribArray(1);	
+        glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
         // vertex texture coords
-        glEnableVertexAttribArray(2);	
+        glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
         // vertex tangent
         glEnableVertexAttribArray(3);
@@ -133,13 +167,13 @@ private:
         // vertex bitangent
         glEnableVertexAttribArray(4);
         glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
-		// ids
-		glEnableVertexAttribArray(5);
-		glVertexAttribIPointer(5, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, m_BoneIDs));
+        // ids
+        glEnableVertexAttribArray(5);
+        glVertexAttribIPointer(5, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, m_BoneIDs));
 
-		// weights
-		glEnableVertexAttribArray(6);
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_Weights));
+        // weights
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_Weights));
         glBindVertexArray(0);
     }
 };

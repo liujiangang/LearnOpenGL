@@ -5,7 +5,9 @@ in vec2 TexCoords;
 
 uniform sampler2D texture_diffuse1;
 
+Uniform float opacity;
+
 void main()
 {    
-    FragColor = texture(texture_diffuse1, TexCoords);
+    FragColor = vec4(texture(texture_diffuse1, TexCoords).rgb, opacity);
 }

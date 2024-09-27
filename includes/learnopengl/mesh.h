@@ -37,6 +37,13 @@ struct Texture {
     string path;
 };
 
+struct Material {
+    glm::vec4 Ka;
+    glm::vec4 Kd;
+    glm::vec4 Ks;
+    float d;
+};
+
 class Mesh {
 public:
     // mesh Data
@@ -45,6 +52,8 @@ public:
     vector<Texture>      textures;
     unsigned int VAO;
 
+
+    struct Material material;
     #define MESH_TYPE_REAR_WHEEL 1
     #define MESH_TYPE_FRONT_WHEEL 2
     #define MESH_TYPE_CAR_BODY 0
@@ -80,6 +89,26 @@ public:
         }
     }
 
+    // constructor
+    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, const char* n, struct Material mat)
+    {
+        this->vertices = vertices;
+        this->indices = indices;
+        this->textures = textures;
+
+        // now that we have all the required data, set the vertex buffers and its attribute pointers.
+        setupMesh();
+
+        if (strlen(n) < MESH_NAME_MAX_LEN) {
+            strcpy(name, n);
+        }
+        else {
+            strncpy(name, n, MESH_NAME_MAX_LEN-1);
+        }
+
+        material = mat;
+    }
+
     // render the mesh
     void Draw(Shader &shader)
     {
@@ -92,6 +121,8 @@ public:
         else {
             shader.setInt("mesh_type", MESH_TYPE_CAR_BODY);
         }
+
+        Shader.setFloat("opacity", material.d);
 
         // bind appropriate textures
         unsigned int diffuseNr  = 1;

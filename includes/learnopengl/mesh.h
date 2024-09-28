@@ -122,7 +122,7 @@ public:
             shader.setInt("mesh_type", MESH_TYPE_CAR_BODY);
         }
 
-        Shader.setFloat("opacity", material.d);
+        shader.setFloat("opacity", material.d);
 
         // bind appropriate textures
         unsigned int diffuseNr  = 1;

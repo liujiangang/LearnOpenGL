@@ -5,7 +5,7 @@ in vec2 TexCoords;
 
 uniform sampler2D texture_diffuse1;
 
-Uniform float opacity;
+uniform float opacity;
 
 void main()
 {    

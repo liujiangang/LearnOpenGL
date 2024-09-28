@@ -52,7 +52,6 @@ public:
     vector<Texture>      textures;
     unsigned int VAO;
 
-
     struct Material material;
     #define MESH_TYPE_REAR_WHEEL 1
     #define MESH_TYPE_FRONT_WHEEL 2
@@ -115,13 +114,18 @@ public:
         //std::cout << "mesh["<<name<<"] start to draw..." << std::endl;
         if (!strcmp(name, "TARMAC_TYRE_TREAD")
             || !strcmp(name, "TARMAC_WHEEL")
-            || !strcmp(name, "TARMAC_TYRE_WALL")) {
+            || !strcmp(name, "TARMAC_TYRE_WALL")
+            || !strcmp(name, "Object_tread.tga.jpg")
+            || !strcmp(name, "Object_civ_wheel.jpg")
+            || !strcmp(name, "Object_civ_rear_wheel.jpg")
+            || !strcmp(name, "Object_civ_front_wheel.jpg")
+            ) {
             shader.setInt("mesh_type", MESH_TYPE_FRONT_WHEEL);
         }
         else {
             shader.setInt("mesh_type", MESH_TYPE_CAR_BODY);
         }
-
+        //if(material.d == 0.3f) material.d = 1.0f;
         shader.setFloat("opacity", material.d);
 
         // bind appropriate textures

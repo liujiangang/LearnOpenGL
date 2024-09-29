@@ -153,9 +153,8 @@ private:
         mat.Kd = glm::vec4(color.r, color.g, color.b,1.0);
         material->Get(AI_MATKEY_COLOR_SPECULAR, color);
         mat.Ks = glm::vec4(color.r, color.g, color.b,1.0);
-        float opacity;
-        material->Get(AI_MATKEY_OPACITY, opacity);
-        mat.d = opacity;
+        material->Get(AI_MATKEY_OPACITY, mat.opacity);
+        material->Get(AI_MATKEY_SHININESS, mat.shininess);
 
         // we assume a convention for sampler names in the shaders. Each diffuse texture should be named
         // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER.

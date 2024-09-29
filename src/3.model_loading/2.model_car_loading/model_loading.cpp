@@ -91,6 +91,9 @@ int main()
     float wheel_offset_y = 0.2f;
     float scaleSize = 1;
     float angle = 0;
+    
+    // lighting
+    glm::vec3 lightPos(-2.2f, 1.0f, 6.0f);
 
     // draw in wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -116,6 +119,12 @@ int main()
 
         // don't forget to enable shader before setting uniforms
         ourShader.use();
+        
+        ourShader.setVec3("light.position", lightPos);
+        ourShader.setVec3("viewPos", camera.Position);
+        ourShader.setVec3("light.ambient", 1.0f, 1.0f, 1.0f);
+        ourShader.setVec3("light.diffuse", 1.0f, 1.0f, 1.0f);
+        ourShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);

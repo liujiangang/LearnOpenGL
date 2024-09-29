@@ -16,16 +16,25 @@ uniform int mesh_type;
 #define MESH_TYPE_FRONT_WHEEL 2
 #define MESH_TYPE_CAR_BODY 0
 
+out vec3 FragPos;
+out vec3 Normal;
+
 void main()
 {
     TexCoords = aTexCoords;
     if(mesh_type == MESH_TYPE_REAR_WHEEL || mesh_type == MESH_TYPE_FRONT_WHEEL) {
         if(aPos.x < 0.0f) {
+            FragPos = vec3(model_rear_wheel * vec4(aPos, 1.0));
+            Normal = mat3(transpose(inverse(model_rear_wheel))) * aNormal;
             gl_Position = projection * view * model_rear_wheel * vec4(aPos, 1.0);
         } else {
+            FragPos = vec3(model_front_wheel * vec4(aPos, 1.0));
+            Normal = mat3(transpose(inverse(model_front_wheel))) * aNormal;
             gl_Position = projection * view * model_front_wheel * vec4(aPos, 1.0);
         }
     } else {
+        FragPos = vec3(model * vec4(aPos, 1.0));
+        Normal = mat3(transpose(inverse(model))) * aNormal;
         gl_Position = projection * view * model * vec4(aPos, 1.0);
     }
 }

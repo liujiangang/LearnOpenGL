@@ -41,7 +41,8 @@ struct Material {
     glm::vec4 Ka;
     glm::vec4 Kd;
     glm::vec4 Ks;
-    float d;
+    float opacity;
+    float shininess;
 };
 
 class Mesh {
@@ -125,8 +126,14 @@ public:
         else {
             shader.setInt("mesh_type", MESH_TYPE_CAR_BODY);
         }
-        //if(material.d == 0.3f) material.d = 1.0f;
-        shader.setFloat("opacity", material.d);
+        
+        // material properties
+        shader.setVec3("material.ambient", material.Ka);
+        shader.setVec3("material.diffuse", material.Kd);
+        // specular lighting doesn't have full effect on this object's material
+        shader.setVec3("material.specular", material.Ks);
+        shader.setFloat("material.shininess", material.shininess);
+        shader.setFloat("material.opacity", material.opacity);
 
         // bind appropriate textures
         unsigned int diffuseNr  = 1;

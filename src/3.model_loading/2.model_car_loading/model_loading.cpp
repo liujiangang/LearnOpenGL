@@ -93,7 +93,7 @@ int main()
     float angle = 0;
     
     // lighting
-    glm::vec3 lightPos(-2.2f, 1.0f, 6.0f);
+    glm::vec3 lightPos(2.2f, -5.0f, 0.0f);
 
     // draw in wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -120,7 +120,7 @@ int main()
         // don't forget to enable shader before setting uniforms
         ourShader.use();
         
-        ourShader.setVec3("light.position", lightPos);
+        ourShader.setVec3("light.direction", lightPos);
         ourShader.setVec3("viewPos", camera.Position);
         ourShader.setVec3("light.ambient", 1.0f, 1.0f, 1.0f);
         ourShader.setVec3("light.diffuse", 1.0f, 1.0f, 1.0f);
